@@ -1,0 +1,3 @@
+resources:
+  defaultSVGPath: src/main/resources/svg/
+  lowerCaseSVGPath: src/main/resources/svg/lower/
