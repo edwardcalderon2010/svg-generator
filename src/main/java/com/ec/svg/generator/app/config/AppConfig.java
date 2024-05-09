@@ -2,6 +2,7 @@ package com.ec.svg.generator.app.config;
 
 import com.ec.svg.generator.app.util.ResourceHelper;
 import com.ec.svg.generator.app.util.SVGLoader;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +14,11 @@ public class AppConfig {
     private static final Logger logger = LoggerFactory.getLogger(AppConfig.class);
 
     @Bean
+    public ModelMapper modelMapper()
+    {
+        return new ModelMapper();
+    }
+    @Bean
     public SVGResourceProperties svgResourceProperties() {
         return new SVGResourceProperties();
     }
@@ -23,7 +29,7 @@ public class AppConfig {
 
     @Bean
     public SVGLoader svgLoader() {
-        return new SVGLoader(resourceHelper(),svgResourceProperties());
+        return new SVGLoader(resourceHelper(),svgResourceProperties(), modelMapper());
 
     }
 

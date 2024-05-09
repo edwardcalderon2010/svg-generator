@@ -20,4 +20,7 @@ public class SVGResourceProperties {
     @Setter
     private String lowerCaseSVGPath;
 
+    @Getter
+    @Setter
+    private String masterXMLresource;
 }

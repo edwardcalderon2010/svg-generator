@@ -1,3 +1,4 @@
 resources:
   defaultSVGPath: src/main/resources/svg/
   lowerCaseSVGPath: src/main/resources/svg/lower/
+  masterXMLresource: all_paths.xml

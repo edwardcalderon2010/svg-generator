@@ -1,6 +1,6 @@
 package com.ec.svg.generator.app.model.entity;
 
-// Generated: Tue May 07 13:54:16 AEST 2024
+// Generated: Wed May 08 11:33:03 AEST 2024
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,44 +16,42 @@ public class Path {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter
     @Setter
-    @Column(name="id")
+    @Column(name="id" , nullable = false)
     private Long id;
 
 
     @Getter
     @Setter
-    @Column(name="glyph_name")
+    @Column(name="glyph_name" , nullable = false)
     private String glyphName;
 
 
     @Getter
     @Setter
-    @Column(name="path_data",columnDefinition="TEXT")
+    @Column(name="path_data" , nullable = false,columnDefinition="TEXT")
     private String pathData;
 
 
     @Getter
     @Setter
-    @Column(name="is_lower_case")
-    private Boolean isIsLowerCase;
+    @Column(name="unicode" , nullable = false)
+    private Integer unicode;
 
 
     @Getter
     @Setter
-    @Column(name="is_symbol")
-    private Boolean isIsSymbol;
+    @Column(name="is_mask" )
+    private Boolean isMask;
 
 
     @Getter
     @Setter
-    @Column(name="source")
-    private String source;
+    @Column(name="sequence" )
+    private Integer sequence;
 
 
     @Getter
     @Setter
     private AuditDetails auditDetails;
-
-
 
 }

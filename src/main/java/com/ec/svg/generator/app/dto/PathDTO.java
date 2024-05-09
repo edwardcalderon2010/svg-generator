@@ -1,6 +1,6 @@
 package com.ec.svg.generator.app.dto;
 
-// Generated: Tue May 07 13:54:22 AEST 2024
+// Generated: Wed May 08 11:33:10 AEST 2024
 
 import lombok.Getter;
 import lombok.Setter;
@@ -24,20 +24,31 @@ public class PathDTO {
 
     @Getter
     @Setter
-    private Boolean isIsLowerCase;
+    private Integer unicode;
 
     @Getter
     @Setter
-    private Boolean isIsSymbol;
+    private Boolean isMask;
 
     @Getter
     @Setter
-    private String source;
+    private Integer sequence;
 
     @Getter
     @Setter
     private AuditDetailsDTO auditDetails;
 
 
-
+    @Override
+    public String toString() {
+        return "PathDTO{" +
+                "id=" + id +
+                ", glyphName='" + glyphName + '\'' +
+                ", pathData='" + pathData + '\'' +
+                ", unicode=" + unicode +
+                ", isMask=" + isMask +
+                ", sequence=" + sequence +
+                ", auditDetails=" + auditDetails +
+                '}';
+    }
 }
