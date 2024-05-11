@@ -89,6 +89,7 @@ public class CubicCurve {
         Boolean contains = Boolean.FALSE;
 
 
+        //logger.info("#### Testing contains curve at " + startPoint.toString() + ";" + endPoint.toString());
         BigDecimal startVal = startPoint.getCoordinate(curveCoord.axisPlane()).value();
         BigDecimal endVal = endPoint.getCoordinate(curveCoord.axisPlane()).value();
 
@@ -98,7 +99,10 @@ public class CubicCurve {
         if (curveCoord.value().compareTo(minVal) >= 0 &&
                 curveCoord.value().compareTo(maxVal) <= 0) {
             contains = Boolean.TRUE;
+            //logger.info("#### Got containment ");
         }
+        //logger.info("#### Testing END ");
+
         return contains;
     }
 

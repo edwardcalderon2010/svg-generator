@@ -3,6 +3,8 @@ package com.ec.svg.generator.app.model.domain.tags;
 import com.ec.svg.generator.app.interfaces.Moveable;
 import com.ec.svg.generator.app.interfaces.SVGElement;
 import com.ec.svg.generator.app.model.domain.SVGAttribute;
+import com.ec.svg.generator.app.util.PathHelper;
+import com.ec.svg.generator.app.util.StringUtils;
 
 import java.math.BigDecimal;
 
@@ -25,9 +27,31 @@ public class PathTag extends SVGElement implements Moveable {
         this.addAttribute(new SVGAttribute(strokeWidth,value));
     };
 
-
     public PathTag() {
         super(path.name());
+    }
+
+    private PathTag(Builder builder) {
+        this();
+
+        setId(builder.tagId);
+        addAttribute(PathHelper.parseGlyphPath(builder.pathCommandString));
+
+        if (StringUtils.hasText(builder.pathStroke)) {
+            setStroke(builder.pathStroke);
+        }
+
+        if (StringUtils.hasText(builder.pathStrokeFill)) {
+            setStrokeFill(builder.pathStrokeFill);
+        }
+
+        if (StringUtils.hasText(builder.pathStrokeWidth)) {
+            setStrokeWidth(builder.pathStrokeWidth);
+        }
+
+        if (StringUtils.hasText(builder.className)) {
+            addClassName(builder.className);
+        }
     }
 
     @Override
@@ -57,5 +81,48 @@ public class PathTag extends SVGElement implements Moveable {
 //            fill="none" stroke="#fff" stroke-width="17"
 //            d="M 656,583.5 C 634,673.5 605,723.5 610.75,743.75" />
 //    </mask>
+
+    public static class Builder {
+
+        private String pathStroke;
+
+        private String pathStrokeFill;
+
+        private String pathStrokeWidth;
+
+        private String pathCommandString;
+
+        private String className;
+
+        private String tagId;
+
+        public Builder(String pathCommandString, String tagId) {
+            this.pathCommandString = pathCommandString;
+            this.tagId = tagId;
+        }
+
+        public Builder pathStroke(String pathStroke) {
+            this.pathStroke = pathStroke;
+            return this;
+        }
+
+        public Builder pathStrokeFill(String pathStrokeFill) {
+            this.pathStrokeFill = pathStrokeFill;
+            return this;
+        }
+
+        public Builder pathStrokeWidth(String pathStrokeWidth) {
+            this.pathStrokeWidth = pathStrokeWidth;
+            return this;
+        }
+
+        public Builder className(String className) {
+            this.className = className;
+            return this;
+        }
+        public PathTag build() {
+            return new PathTag(this);
+        }
+    }
 
 }

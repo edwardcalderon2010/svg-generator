@@ -41,14 +41,26 @@ convert() {
 }
 
 generate_master_xml() {
+	
+	sed_strip_stroke_attrs="s/\(fill\|\(stroke\(\o55*\w\+\)*\)\)\o75\o42\w\+\o42\o40//g";
+	sed_set_stroke_width_17="s/\(stroke\o55width\o75\o42\)1\(\o42\)/\117\2/g";
+	sed_set_fill_fff="s/\(stroke\o75\o42\)\w\+\(\o42\)/\1#fff\2/g";
+	
 	cat `find . -name "*.svg"` | tr -d "\n" | tr -d "\r" | sed 's/>\s\+</></g' | sed 's/></>\n</g' | grep path > $temp_file;
 	echo "<body>" > $master_file;
 	echo "<def>" >> $master_file;
-	cat $temp_file | grep -v "_mask_" | sort >> $master_file;
+	cat "$temp_file" \
+	| grep -v "_mask_" \
+	| sed ''$sed_strip_stroke_attrs'' \
+	| sort >> $master_file;
 	echo "</def>" >> $master_file;
 
 	echo "<masks>" >> $master_file;
-	cat $temp_file | grep "_mask_" | sort >> $master_file;
+	cat $temp_file \
+	| grep "_mask_" \
+	| sed ''$sed_set_stroke_width_17'' \
+	| sed ''$sed_set_fill_fff'' \
+	| sort >> $master_file;
 	echo "</masks>" >> $master_file;
 	echo "</body>" >> $master_file;
 

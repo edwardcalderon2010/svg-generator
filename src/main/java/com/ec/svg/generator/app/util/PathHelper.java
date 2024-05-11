@@ -1,12 +1,15 @@
 package com.ec.svg.generator.app.util;
 
+import com.ec.svg.generator.app.interfaces.SVGElement;
 import com.ec.svg.generator.app.model.domain.Letter;
 import com.ec.svg.generator.app.model.domain.SVGPathD;
+import com.ec.svg.generator.app.model.domain.enums.AttributeType;
+import com.ec.svg.generator.app.model.domain.enums.AxisPlane;
+import com.ec.svg.generator.app.model.domain.enums.MathBound;
 import com.ec.svg.generator.app.model.domain.enums.TagName;
+import com.ec.svg.generator.app.model.domain.path.*;
 import com.ec.svg.generator.app.model.domain.tags.PathTag;
 import com.ec.svg.generator.app.model.domain.SVGPathSection;
-import com.ec.svg.generator.app.model.domain.path.Command;
-import com.ec.svg.generator.app.model.domain.path.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +25,9 @@ import static com.ec.svg.generator.app.model.domain.enums.CommandType.Z;
 
 public class PathHelper {
     private static final Logger logger = LoggerFactory.getLogger(PathHelper.class);
+
+    public static final String FONT_MAX_X_REFERENCE_HEIGHT = "140.00";
+    public static final String FONT_MIN_X_REFERENCE_HEIGHT = "137.00";
 
     public static String G_PATH_1 = "M 140.53,139.05 " +
             "C 141.14,136.90 142.18,135.21 143.62,133.98 " +
@@ -248,6 +254,66 @@ public class PathHelper {
 
     public static String EXCLAMATION_GLYPH_MASK = "M 56.50,39.00 C 2.50,206.25 9.50,192.50 12.25,200.00";
 
+    public static BigDecimal getMinXReferencePointAtY(List<? extends SVGElement> svgElements) {
+
+        Coordinate targetY = new Coordinate(new BigDecimal(FONT_MIN_X_REFERENCE_HEIGHT), AxisPlane.Y);
+        ParameterContext minXParamContainingY = new ParameterContext(MathBound.MIN, AxisPlane.X, targetY);
+
+        return getReferencePoint(minXParamContainingY,svgElements).getXValue();
+    }
+
+    public static BigDecimal getMaxXReferencePointAtY(List<? extends SVGElement> svgElements) {
+
+        Coordinate targetY = new Coordinate(new BigDecimal(FONT_MAX_X_REFERENCE_HEIGHT), AxisPlane.Y);
+        ParameterContext maxXParamContainingY = new ParameterContext(MathBound.MAX, AxisPlane.X, targetY);
+
+        return getReferencePoint(maxXParamContainingY,svgElements).getXValue();
+    }
+
+    public static BigDecimal getMinXBounds(List<? extends SVGElement> svgElements) {
+        ParameterContext minXParam = new ParameterContext(MathBound.MIN, AxisPlane.X);
+
+        return getReferenceCurve(minXParam,svgElements);
+    }
+
+    public static BigDecimal getMaxXBounds(List<? extends SVGElement> svgElements) {
+        ParameterContext maxXParam = new ParameterContext(MathBound.MAX, AxisPlane.X);
+
+        return getReferenceCurve(maxXParam,svgElements);
+    }
+
+    public static BigDecimal getReferenceCurve(ParameterContext paramContext, List<? extends SVGElement> svgElements) {
+        BigDecimal result = BigDecimal.ZERO;
+
+        CubicCurve refCurve = svgElements.stream()
+                .map(pathTag -> pathTag.getAttribute(AttributeType.d))
+                .map(svgattr -> (SVGPathD)svgattr)
+                .map(svgPathD -> svgPathD.getReferenceCurve(paramContext))
+                .reduce((a,b) -> a.compare(paramContext,b))
+                .orElse(null);
+
+        if (refCurve != null) {
+            result = refCurve.getReferenceValue(paramContext);
+        }
+
+        return result;
+    }
+
+    public static Point getReferencePoint(ParameterContext paramContext, List<? extends SVGElement> svgElements) {
+        Point resultPoint  = svgElements
+                .stream()
+                .map(pathTag -> pathTag.getAttribute(AttributeType.d))
+                .map(svgattr -> (SVGPathD)svgattr)
+                .map(pathD -> pathD.getReferencePoint(paramContext))
+                .filter(Objects::nonNull)
+                .reduce((a,b) -> a.compareReduce(paramContext,b))
+                .orElse(Point.ZERO);
+
+        return resultPoint;
+    }
+
+
+
     public static void initLetter() {
         List<String> letterPaths = new ArrayList<>();
         letterPaths.add(G_PATH_1);
@@ -263,6 +329,46 @@ public class PathHelper {
 
         logger.info(letterHLc.toString());
 
+    }
+
+    public static SVGPathD parseGlyphPath(String glyphPath) {
+        SVGPathD svgPathD = new SVGPathD();
+        SVGPathSection tempSvgPathSection = null;
+
+        // 1. Split by M command
+        List<String> mSplit = Arrays.stream(glyphPath.split(M.name())).toList();
+        for (String tempPath : mSplit) {
+            tempSvgPathSection = new SVGPathSection();
+            if (tempPath.contains(C.name())) {
+                //logger.info("Processing BezierCurve");
+                String[] pathElems = tempPath.split(C.name());
+                //logger.info("Element 0: >" + pathElems[0] + "<");
+                //logger.info("Element 1: >" + pathElems[1] + "<");
+
+                Command tempCmd = new Command(M);
+                tempCmd.addParameter(parseXYCoord(pathElems[0]));
+                tempSvgPathSection.addCommand(tempCmd);
+
+                tempCmd = new Command(C);
+                Arrays.stream(pathElems[1].trim().split(" ")).map(PathHelper::parseXYCoord).filter(Objects::nonNull).forEach(tempCmd::addParameter);
+                tempSvgPathSection.addCommand(tempCmd);
+
+            }
+
+            if (tempPath.contains(Z.name())) {
+                Command tempCmd = new Command(Z);
+                tempSvgPathSection.addCommand(tempCmd);
+            }
+
+            if (tempSvgPathSection.getPathCommands() != null
+                    && tempSvgPathSection.getPathCommands().size() > 0) {
+                svgPathD.addPathSection(tempSvgPathSection);
+                //logger.info("Updated path " + svgPathD.getValue());
+
+            }
+        }
+
+        return svgPathD;
     }
     public static PathTag parseGlyphPath(String glyphPath, String id) {
         PathTag fontStroke = new PathTag();

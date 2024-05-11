@@ -1,5 +1,9 @@
 package com.ec.svg.generator.app.config;
 
+import com.ec.svg.generator.app.engine.Generator;
+import com.ec.svg.generator.app.interfaces.PathService;
+import com.ec.svg.generator.app.model.entity.PathRepository;
+import com.ec.svg.generator.app.service.PathServiceImpl;
 import com.ec.svg.generator.app.util.ResourceHelper;
 import com.ec.svg.generator.app.util.SVGLoader;
 import org.modelmapper.ModelMapper;

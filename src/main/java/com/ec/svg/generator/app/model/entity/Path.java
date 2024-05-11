@@ -1,6 +1,6 @@
 package com.ec.svg.generator.app.model.entity;
 
-// Generated: Wed May 08 11:33:03 AEST 2024
+// Generated: Fri May 10 13:58:30 AEST 2024
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,6 +24,24 @@ public class Path {
     @Setter
     @Column(name="glyph_name" , nullable = false)
     private String glyphName;
+
+
+    @Getter
+    @Setter
+    @Column(name="path_stroke" )
+    private String pathStroke;
+
+
+    @Getter
+    @Setter
+    @Column(name="path_stroke_fill" )
+    private String pathStrokeFill;
+
+
+    @Getter
+    @Setter
+    @Column(name="path_stroke_width" )
+    private String pathStrokeWidth;
 
 
     @Getter
@@ -53,5 +71,7 @@ public class Path {
     @Getter
     @Setter
     private AuditDetails auditDetails;
+
+
 
 }

@@ -2,6 +2,7 @@ package com.ec.svg.generator.app.model.domain;
 
 import com.ec.svg.generator.app.interfaces.Moveable;
 import com.ec.svg.generator.app.model.domain.enums.AttributeType;
+import com.ec.svg.generator.app.model.domain.path.CubicCurve;
 import com.ec.svg.generator.app.model.domain.path.ParameterContext;
 import com.ec.svg.generator.app.model.domain.path.Point;
 import lombok.Getter;
@@ -43,6 +44,16 @@ public class SVGPathD extends SVGAttribute implements Moveable {
         }
 
         this.value = result;
+    }
+
+    public CubicCurve getReferenceCurve(ParameterContext paramContext) {
+        CubicCurve result = getPathSections()
+                .stream()
+                .map(section -> section.getReferenceCurve(paramContext))
+                .reduce((a,b) -> a.compare(paramContext,b))
+                .orElse(null);
+
+        return result;
     }
 
     public Point getReferencePoint(ParameterContext paramContext) {

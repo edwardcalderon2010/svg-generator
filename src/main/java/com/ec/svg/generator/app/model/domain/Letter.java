@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static com.ec.svg.generator.app.util.PathHelper.parseGlyphPath;
+import static com.ec.svg.generator.app.util.PathHelper.*;
 
 public class Letter {
 
@@ -35,19 +35,9 @@ public class Letter {
     private static final String MASK_LABEL_SUFFIX = "_mask";
 
     @Getter
-    private Point maxXPoint;
-
-    @Getter
-    private Point minXPoint;
-
-    @Getter
-    private Point maxYPoint;
-
-    @Getter
-    private Point minYPoint;
-
-    @Getter
     private BigDecimal fontWidth;
+
+    private HashMap<TagName, List<? extends SVGElement>> tagMap;
 
     public static int getIdAutoIncrement() {
         int result = ID_AUTO_INCREMENT;
@@ -55,7 +45,6 @@ public class Letter {
         return result;
     }
 
-    private HashMap<TagName, List<? extends SVGElement>> tagMap;
     public Letter(String name, List<String> letterPaths, List<String> letterMasks, BigDecimal xCoord, BigDecimal yCoord ) {
 
         tagMap = new HashMap<>();
@@ -98,51 +87,14 @@ public class Letter {
             addLetterGroup(letterGroup);
         }
 
-        calculateLetterWidth();
-
-    }
-
-    private void calculateLetterWidth() {
         // Letter width is the difference of xCoord between the min and max Params
         // whose yCoords are resting on 135
 
-        Coordinate targetY = new Coordinate(new BigDecimal("135.00"), AxisPlane.Y);
-        ParameterContext minXParamContainingY = new ParameterContext(MathBound.MIN, AxisPlane.X, targetY);
-        ParameterContext maxXParamContainingY = new ParameterContext(MathBound.MAX, AxisPlane.X, targetY);
+        fontWidth = getMaxXReferencePointAtY(tagMap.get(TagName.path))
+                .subtract(getMinXReferencePointAtY(tagMap.get(TagName.path)));
 
-
-        Coordinate targetX = new Coordinate(new BigDecimal("50.00"), AxisPlane.X);
-        ParameterContext minYParamContainingX = new ParameterContext(MathBound.MIN, AxisPlane.Y, targetX);
-        ParameterContext maxYParamContainingX = new ParameterContext(MathBound.MAX, AxisPlane.Y, targetX);
-
-
-        maxXPoint = getReferencePoint(maxXParamContainingY);
-        logger.info("#### Got max X: " + maxXPoint.toString());
-
-        minXPoint = getReferencePoint(minXParamContainingY);
-        logger.info("#### Got min X: " + minXPoint.toString());
-
-        maxYPoint = getReferencePoint(maxYParamContainingX);
-        logger.info("#### Got max Y: " + maxYPoint.toString());
-
-        minYPoint = getReferencePoint(minYParamContainingX);
-        logger.info("#### Got min Y: " + minYPoint.toString());
-
-        fontWidth = maxXPoint.getXValue().subtract(minXPoint.getXValue());
     }
 
-    public Point getReferencePoint(ParameterContext paramContext) {
-        Point resultPoint  = tagMap.get(TagName.path)
-                .stream()
-                .map(pathTag -> pathTag.getAttribute(AttributeType.d))
-                .map(svgattr -> (SVGPathD)svgattr)
-                .map(pathD -> pathD.getReferencePoint(paramContext))
-                .filter(Objects::nonNull)
-                .reduce((a,b) -> a.compareReduce(paramContext,b))
-                .orElse(Point.ZERO);
-
-        return resultPoint;
-    }
     public void addClassName(TagName tagName, String className) {
         tagMap.get(tagName).forEach(elem -> elem.addClassName(className));
     }
@@ -174,7 +126,6 @@ public class Letter {
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("maxX:" + maxXPoint + ";\nminX:" + minXPoint + ";\nmaxY:" + maxYPoint + ";\nminY:" + minYPoint + "\n");
         sb.append("fontWidth:" + fontWidth.toString() + "\n");
         sb.append(renderTagList(TagName.path) + "\n");
         sb.append(renderTagList(TagName.mask) + "\n");

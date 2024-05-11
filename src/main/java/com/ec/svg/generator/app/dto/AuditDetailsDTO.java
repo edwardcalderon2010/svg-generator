@@ -1,6 +1,6 @@
 package com.ec.svg.generator.app.dto;
 
-// Generated: Wed May 08 11:33:10 AEST 2024
+// Generated: Fri May 10 13:58:32 AEST 2024
 
 import lombok.Getter;
 import lombok.Setter;
@@ -36,15 +36,5 @@ public class AuditDetailsDTO {
     private Boolean isActive;
 
 
-    @Override
-    public String toString() {
-        return "AuditDetailsDTO{" +
-                "createdBy='" + createdBy + '\'' +
-                ", modifiedBy='" + modifiedBy + '\'' +
-                ", createdTs=" + createdTs +
-                ", modifiedTs=" + modifiedTs +
-                ", version=" + version +
-                ", isActive=" + isActive +
-                '}';
-    }
+
 }

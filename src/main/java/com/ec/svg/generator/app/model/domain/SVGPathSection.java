@@ -61,6 +61,23 @@ public class SVGPathSection {
 
     }
 
+    public CubicCurve getReferenceCurve(ParameterContext paramContext) {
+        List<CubicCurve> cubicCurves = getCubicCurves();
+        CubicCurve result = null;
+
+        result = cubicCurves
+                .stream()
+                .reduce((a,b) -> a.compare(paramContext,b))
+                .orElse(null);
+
+        if (result != null)  {
+            logger.info("Got " + paramContext.getMathBound() + " curve: " + result.toString());
+        }
+
+        return result;
+
+    }
+
     public CubicCurve getContainingCurve(ParameterContext paramContext) {
         List<CubicCurve> cubicCurves = getCubicCurves();
         CubicCurve result = null;
@@ -71,9 +88,9 @@ public class SVGPathSection {
                 .reduce((a,b) -> a.compare(paramContext,b))
                 .orElse(null);
 
-//        if (result != null)  {
-//            logger.info("Got container curve: " + result.toString());
-//        }
+        if (result != null)  {
+            logger.info("Got container curve: " + result.toString());
+        }
 
         return result;
     }

@@ -29,15 +29,14 @@ import java.util.regex.Pattern;
 
 import org.w3c.dom.NodeList;
 
+import static com.ec.svg.generator.app.util.StringUtils.KEY_FOR_033_UNICODE;
+import static com.ec.svg.generator.app.util.StringUtils.REGEX_PATH_UNICODE_ID;
+import static com.ec.svg.generator.app.util.StringUtils.REGEX_PATH_SEQUENCE;
+
 public class ResourceHelper {
 
     public static final String SYSTEM_USER = "system";
     public static final String MASK_ID = "mask";
-
-    public static final String KEY_FOR_033_UNICODE = "exc";
-
-    public static final String REGEX_PATH_UNICODE_ID = "(\\w+?)_";
-    public static final String REGEX_PATH_SEQUENCE = "\\w+_\\w+_(\\w+)";
 
     private static final Logger logger = LoggerFactory.getLogger(ResourceHelper.class);
 
@@ -102,7 +101,7 @@ public class ResourceHelper {
     private Path mapToPath(PathDTO pathDTO, ModelMapper modelMapper) {
         Path path = modelMapper.map(pathDTO, Path.class);
 
-        //logger.info("Got path entity: " + path.toString());
+        logger.info("Got path entity: " + path.toString());
 
         return path;
     }
@@ -178,6 +177,14 @@ public class ResourceHelper {
         return rawUnicode;
     }
 
+    private String safeNodeValueFetch(Node node, String namedItem) {
+        String result = null;
+        Node fetchedNode = node.getAttributes().getNamedItem(namedItem);
+        if (fetchedNode != null) {
+            result = fetchedNode.getNodeValue();
+        }
+        return result;
+    }
     private PathDTO processNode(Node node) {
         PathDTO resultDTO = new PathDTO();
         String id = node.getAttributes().getNamedItem("id").getNodeValue();
@@ -192,10 +199,13 @@ public class ResourceHelper {
             resultDTO.setPathData(node.getAttributes().getNamedItem("d").getNodeValue());
             resultDTO.setUnicode(numericUnicode);
 
+            resultDTO.setIsMask(Boolean.FALSE);
             if (id.contains(MASK_ID)) {
                 resultDTO.setIsMask(Boolean.TRUE);
+                resultDTO.setPathStroke(safeNodeValueFetch(node, "stroke"));
+                resultDTO.setPathStrokeFill(safeNodeValueFetch(node, "fill"));
+                resultDTO.setPathStrokeWidth(safeNodeValueFetch(node, "stroke-width"));
             }
-
             String rawSeq = getMatchingValue(id,REGEX_PATH_SEQUENCE,1);
 
             if (rawSeq != null) {

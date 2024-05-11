@@ -1,6 +1,6 @@
 package com.ec.svg.generator.app.model.entity;
 
-// Generated: Wed May 08 11:33:03 AEST 2024
+// Generated: Fri May 10 13:58:30 AEST 2024
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
@@ -49,6 +49,7 @@ public class AuditDetails {
     @Setter
     @Column(name="active" , nullable = false)
     private Boolean isActive;
+
 
 
 }

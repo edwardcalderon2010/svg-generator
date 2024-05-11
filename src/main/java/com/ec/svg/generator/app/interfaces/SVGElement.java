@@ -11,7 +11,7 @@ import static com.ec.svg.generator.app.model.domain.enums.AttributeType.id;
 import static com.ec.svg.generator.app.model.domain.enums.AttributeType.className;
 
 
-public abstract class SVGElement implements XMLFragment {
+public abstract class SVGElement implements XMLFragment, Cloneable {
 
     @Getter
     protected final String tagName;
@@ -22,11 +22,12 @@ public abstract class SVGElement implements XMLFragment {
     protected List<SVGElement> childElements;
 
     @Getter
-    protected HashMap<AttributeType,SVGAttribute> attributeMap;
+    protected Map<AttributeType,SVGAttribute> attributeMap;
 
     public SVGElement(String tagName) {
         this.tagName = tagName;
     }
+
 
     public void addChildElement(SVGElement child) {
         if (childElements == null) {
@@ -41,15 +42,13 @@ public abstract class SVGElement implements XMLFragment {
 
         if (childElements != null) {
             result = childElements.stream().filter(elem -> elem.getTagName().equals(tagName.name())).findFirst().orElse(null);
-
         }
-
         return result;
     }
 
     public void addAttribute(SVGAttribute svgAttribute) {
         if (attributeMap == null) {
-            attributeMap = new HashMap<>();
+            attributeMap = new LinkedHashMap<>();
         }
 
         attributeMap.put(svgAttribute.getName(),svgAttribute);
