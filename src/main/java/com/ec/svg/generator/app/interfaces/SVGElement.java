@@ -149,8 +149,6 @@ public abstract class SVGElement implements XMLFragment, Cloneable {
             }
 
         }
-
-        clonedElem.addClassName("justgotcloned");
         return clonedElem;
     }
 

@@ -29,8 +29,9 @@ public class Generator {
         if (StringUtils.hasText(inputString)) {
             logger.info("Generating SVG from: " + inputString);
             SVGResource svgResource = new SVGResource();
-            svgResource.init(assembleLetterDefinitionAlphabet(inputString));
-            inputString.chars().forEach(svgResource::addChar);
+            svgResource.init(assembleLetterDefinitionAlphabet(inputString), inputString);
+            svgResource.generate();
+            //inputString.chars().forEach(svgResource::addChar);
             logger.info(svgResource.render());
 
         }

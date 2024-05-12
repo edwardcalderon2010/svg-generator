@@ -20,7 +20,6 @@ public class MaskTag extends SVGElement {
         setId(builder.maskId);
 
         PathTag childPath = builder.pathTag;
-        childPath.addClassName("cloneTest");
 
         if (childPath != null) {
             childPath.applyXOffset(builder.xOffset);
@@ -45,7 +44,7 @@ public class MaskTag extends SVGElement {
         public Builder pathTag(PathTag inputTag) {
 
             try {
-                logger.info("Initiating clone on embedded PathTag: " + maskId);
+                //logger.info("Initiating clone on embedded PathTag: " + maskId);
                 this.pathTag = (PathTag) inputTag.clone();
             } catch (CloneNotSupportedException cnse) {
                 logger.info("PathTag clone failed " + cnse);

@@ -23,7 +23,7 @@ public class SvgGeneratorApplication {
 		SVGLoader loader = ctx.getBean(SVGLoader.class);
 		loader.load();
 		Generator generator = ctx.getBean(Generator.class);
-		String svgText = "go broncos!";
+		String svgText = "i will be like the million fold stars in the sky";
 		generator.generateSVGFromString(svgText);
 
 		//testClonePathTag();
