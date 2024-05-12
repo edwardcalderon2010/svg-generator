@@ -5,7 +5,7 @@ import com.ec.svg.generator.app.model.domain.enums.AttributeType;
 import lombok.Getter;
 import lombok.Setter;
 import com.ec.svg.generator.app.util.StringUtils;
-public class SVGAttribute implements XMLFragment {
+public class SVGAttribute implements XMLFragment, Cloneable {
 
     @Getter
     protected final AttributeType name;
@@ -30,5 +30,12 @@ public class SVGAttribute implements XMLFragment {
         }
 
         return result;
+    }
+
+    @Override
+    public SVGAttribute clone() throws CloneNotSupportedException {
+        SVGAttribute clone = (SVGAttribute) super.clone();
+
+        return clone;
     }
 }

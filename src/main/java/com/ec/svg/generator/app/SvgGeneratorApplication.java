@@ -1,11 +1,12 @@
 package com.ec.svg.generator.app;
 
 import com.ec.svg.generator.app.engine.Generator;
-import com.ec.svg.generator.app.util.PathHelper;
 import com.ec.svg.generator.app.util.SVGLoader;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+
+import static com.ec.svg.generator.app.util.PathHelper.testClonePathTag;
 
 @SpringBootApplication
 public class SvgGeneratorApplication {
@@ -22,10 +23,11 @@ public class SvgGeneratorApplication {
 		SVGLoader loader = ctx.getBean(SVGLoader.class);
 		loader.load();
 		Generator generator = ctx.getBean(Generator.class);
-		String svgText = "fantastic!";
+		String svgText = "go broncos!";
 		generator.generateSVGFromString(svgText);
 
-//		PathHelper.initLetter();
+		//testClonePathTag();
+
 	}
 
 

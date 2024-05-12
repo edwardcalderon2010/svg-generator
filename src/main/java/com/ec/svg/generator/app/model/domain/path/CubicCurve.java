@@ -13,7 +13,7 @@ import java.math.RoundingMode;
 
 import static com.ec.svg.generator.app.util.MathUtils.setScale;
 
-public class CubicCurve {
+public class CubicCurve implements Cloneable {
 
     private static final Logger logger = LoggerFactory.getLogger(CubicCurve.class);
 
@@ -55,6 +55,10 @@ public class CubicCurve {
         this.controlPointOne = controlOne;
         this.controlPointTwo = controlTwo;
 
+        init();
+    }
+
+    private void init() {
         this.minX = getReferenceValue(ParameterContext.MIN_X);
         this.maxX = getReferenceValue(ParameterContext.MAX_X);
         this.minY = getReferenceValue(ParameterContext.MIN_Y);
@@ -62,6 +66,7 @@ public class CubicCurve {
 
         this.width = maxX.subtract(minX);
         this.height = maxY.subtract(minY);
+
     }
 
     public Point getBezierCurvePoint(Coordinate curveCoord) {
@@ -163,4 +168,17 @@ public class CubicCurve {
                 "; ControlTwo:"+controlPointTwo.toString()+" ]";
     }
 
+    @Override
+    public CubicCurve clone() throws CloneNotSupportedException {
+        CubicCurve sourceElem = this;
+        CubicCurve clone = (CubicCurve) super.clone();
+
+        clone.setStartPoint(sourceElem.getStartPoint().clone());
+        clone.setEndPoint(sourceElem.getEndPoint().clone());
+        clone.setControlPointOne(sourceElem.getControlPointOne().clone());
+        clone.setControlPointTwo(sourceElem.getControlPointTwo());
+        clone.init();
+
+        return clone;
+    }
 }

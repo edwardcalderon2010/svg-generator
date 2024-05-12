@@ -2,11 +2,14 @@ package com.ec.svg.generator.app.model.domain.tags;
 
 import com.ec.svg.generator.app.interfaces.SVGElement;
 import com.ec.svg.generator.app.model.domain.enums.TagName;
-import com.ec.svg.generator.app.model.entity.Path;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 
 public class MaskTag extends SVGElement {
+
+    private static final Logger logger = LoggerFactory.getLogger(MaskTag.class);
 
     public MaskTag() {
         super(TagName.mask.name());
@@ -17,6 +20,7 @@ public class MaskTag extends SVGElement {
         setId(builder.maskId);
 
         PathTag childPath = builder.pathTag;
+        childPath.addClassName("cloneTest");
 
         if (childPath != null) {
             childPath.applyXOffset(builder.xOffset);
@@ -38,8 +42,14 @@ public class MaskTag extends SVGElement {
             return this;
         }
 
-        public Builder pathTag(PathTag pathTag) {
-            this.pathTag = pathTag;
+        public Builder pathTag(PathTag inputTag) {
+
+            try {
+                logger.info("Initiating clone on embedded PathTag: " + maskId);
+                this.pathTag = (PathTag) inputTag.clone();
+            } catch (CloneNotSupportedException cnse) {
+                logger.info("PathTag clone failed " + cnse);
+            }
             return this;
         }
 

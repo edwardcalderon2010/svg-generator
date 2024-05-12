@@ -7,13 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Command {
+public class Command implements Cloneable {
 
     @Getter
     private final CommandType commandType;
 
     @Getter
-    private List<Point> parameterList;
+    private List<Point> parameterList = new ArrayList<>();
 
     public Command(CommandType commandType) {
         this.commandType = commandType;
@@ -39,5 +39,22 @@ public class Command {
         }
 
         return result;
+    }
+
+    @Override
+    public Command clone() throws CloneNotSupportedException {
+        Command sourceCmd = this;
+        Command clone = (Command) super.clone();
+        List<Point> clonedPoints = new ArrayList<>();
+        sourceCmd.getParameterList().forEach(pt -> {
+            try {
+                clonedPoints.add(pt.clone());
+            } catch (CloneNotSupportedException cnse) {
+                cnse.printStackTrace();
+            }
+        });
+        clone.parameterList = clonedPoints;
+
+        return clone;
     }
 }

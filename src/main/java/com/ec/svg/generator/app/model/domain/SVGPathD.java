@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class SVGPathD extends SVGAttribute implements Moveable {
+public class SVGPathD extends SVGAttribute implements Moveable, Cloneable {
 
     private static final Logger logger = LoggerFactory.getLogger(SVGPathD.class);
 
@@ -100,5 +100,23 @@ public class SVGPathD extends SVGAttribute implements Moveable {
                                             .forEach(param -> param.applyYOffset(yOffset))));
         }
         updateValue();
+    }
+
+    @Override
+    public SVGPathD clone() throws CloneNotSupportedException {
+        SVGPathD clone = (SVGPathD) super.clone();
+        SVGPathD sourceElem = this;
+
+        List<SVGPathSection> clonedSections = new ArrayList<>();
+        sourceElem.getPathSections().forEach(elem -> {
+            try {
+                clonedSections.add(elem.clone());
+            } catch (CloneNotSupportedException cnse) {
+                cnse.printStackTrace();
+            }
+        });
+        clone.pathSections = clonedSections;
+
+        return clone;
     }
 }

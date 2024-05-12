@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 
-public class Point implements Moveable {
+public class Point implements Moveable, Cloneable {
 
     public static Point ZERO = new Point(BigDecimal.ZERO, BigDecimal.ZERO);
     @Getter
@@ -109,4 +109,11 @@ public class Point implements Moveable {
         return getCoordinate(AxisPlane.Y).value();
     }
 
+    @Override
+    public Point clone() throws CloneNotSupportedException {
+        Point clone = (Point) super.clone();
+        clone.setXCoord(new Coordinate(xCoord.getValue(),xCoord.axisPlane()));
+        clone.setYCoord(new Coordinate(yCoord.getValue(),yCoord.axisPlane()));
+        return clone;
+    }
 }

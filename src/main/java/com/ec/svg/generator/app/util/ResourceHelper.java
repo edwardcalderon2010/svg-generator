@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
 
 import org.w3c.dom.NodeList;
 
-import static com.ec.svg.generator.app.util.StringUtils.KEY_FOR_033_UNICODE;
+import static com.ec.svg.generator.app.model.domain.FontCharacter.KEY_FOR_033_UNICODE;
 import static com.ec.svg.generator.app.util.StringUtils.REGEX_PATH_UNICODE_ID;
 import static com.ec.svg.generator.app.util.StringUtils.REGEX_PATH_SEQUENCE;
 

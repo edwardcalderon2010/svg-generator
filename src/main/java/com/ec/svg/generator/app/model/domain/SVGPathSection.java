@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class SVGPathSection {
+public class SVGPathSection implements Cloneable {
 
     private static final Logger logger = LoggerFactory.getLogger(SVGPathSection.class);
 
@@ -113,5 +113,33 @@ public class SVGPathSection {
         }
 
         return result;
+    }
+
+    @Override
+    public SVGPathSection clone() throws CloneNotSupportedException {
+        SVGPathSection sourceElem = this;
+        SVGPathSection clone = (SVGPathSection) super.clone();
+
+        List<Command> clonedCommands = new ArrayList<>();
+        sourceElem.getPathCommands().forEach(cmd -> {
+            try {
+                clonedCommands.add(cmd.clone());
+            } catch (CloneNotSupportedException cnse) {
+                cnse.printStackTrace();
+            }
+        });
+        clone.pathCommands = clonedCommands;
+
+        List<CubicCurve> clonedCurves = new ArrayList<>();
+        sourceElem.getCubicCurves().forEach(crv -> {
+            try {
+                clonedCurves.add(crv.clone());
+            } catch (CloneNotSupportedException cnse) {
+                cnse.printStackTrace();
+            }
+        });
+        clone.cubicCurves = clonedCurves;
+
+        return clone;
     }
 }

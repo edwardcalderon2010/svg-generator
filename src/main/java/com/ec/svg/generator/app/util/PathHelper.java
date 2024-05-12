@@ -1,12 +1,10 @@
 package com.ec.svg.generator.app.util;
 
 import com.ec.svg.generator.app.interfaces.SVGElement;
-import com.ec.svg.generator.app.model.domain.Letter;
 import com.ec.svg.generator.app.model.domain.SVGPathD;
 import com.ec.svg.generator.app.model.domain.enums.AttributeType;
 import com.ec.svg.generator.app.model.domain.enums.AxisPlane;
 import com.ec.svg.generator.app.model.domain.enums.MathBound;
-import com.ec.svg.generator.app.model.domain.enums.TagName;
 import com.ec.svg.generator.app.model.domain.path.*;
 import com.ec.svg.generator.app.model.domain.tags.PathTag;
 import com.ec.svg.generator.app.model.domain.SVGPathSection;
@@ -282,6 +280,34 @@ public class PathHelper {
         return getReferenceCurve(maxXParam,svgElements);
     }
 
+    public static void testClonePathTag() {
+        PathTag path1 = new PathTag
+                .Builder(PathHelper.G_PATH_1,"g_path_1")
+                .pathStroke("#fff")
+                .pathStrokeFill("none")
+                .pathStrokeWidth("17")
+                .className("strokeMask")
+                .build();
+
+        try {
+            PathTag path2 = (PathTag)path1.clone();
+            path2.setId("g_path_2");
+            path2.addClassName("strokeMask2");
+            path2.addAttribute(PathHelper.parseGlyphPath(PathHelper.G_PATH_2));
+
+            logger.info(path1.render() + "\n");
+            logger.info(path2.render() + "\n");
+
+            path1.applyXOffset(new BigDecimal("10.00"));
+            path2.applyXOffset(new BigDecimal("50.00"));
+            logger.info(path1.render() + "\n");
+            logger.info(path2.render() + "\n");
+
+        } catch (CloneNotSupportedException cnse) {
+            cnse.printStackTrace();
+        }
+    }
+
     public static BigDecimal getReferenceCurve(ParameterContext paramContext, List<? extends SVGElement> svgElements) {
         BigDecimal result = BigDecimal.ZERO;
 
@@ -310,25 +336,6 @@ public class PathHelper {
                 .orElse(Point.ZERO);
 
         return resultPoint;
-    }
-
-
-
-    public static void initLetter() {
-        List<String> letterPaths = new ArrayList<>();
-        letterPaths.add(G_PATH_1);
-        letterPaths.add(G_PATH_2);
-        List<String> letterMasks = new ArrayList<>();
-        letterMasks.add(G_MASK_1);
-        letterMasks.add(G_MASK_2);
-
-        Letter letterHLc = new Letter("g", letterPaths, letterMasks, new BigDecimal(476),new BigDecimal(0));
-        letterHLc.addClassName(TagName.path, "letter_path");
-        letterHLc.addClassName(TagName.mask, "strokeMask");
-
-
-        logger.info(letterHLc.toString());
-
     }
 
     public static SVGPathD parseGlyphPath(String glyphPath) {

@@ -3,7 +3,10 @@ package com.ec.svg.generator.app.interfaces;
 import com.ec.svg.generator.app.model.domain.SVGAttribute;
 import com.ec.svg.generator.app.model.domain.enums.AttributeType;
 import com.ec.svg.generator.app.model.domain.enums.TagName;
+import com.ec.svg.generator.app.model.domain.tags.PathTag;
 import lombok.Getter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -13,9 +16,12 @@ import static com.ec.svg.generator.app.model.domain.enums.AttributeType.classNam
 
 public abstract class SVGElement implements XMLFragment, Cloneable {
 
+    private static final Logger logger = LoggerFactory.getLogger(SVGElement.class);
+
     @Getter
     protected final String tagName;
 
+    @Getter
     protected List<String> classNames;
 
     @Getter
@@ -102,6 +108,50 @@ public abstract class SVGElement implements XMLFragment, Cloneable {
         }
 
         return renderResult;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        SVGElement clonedElem = null;
+
+        if (this instanceof PathTag) {
+
+            PathTag sourceElem = (PathTag) this;
+            logger.info("SVGElement: cloning from: " + sourceElem.getAttributeMap().get(id).getValue());
+
+            clonedElem = (SVGElement) super.clone();
+
+            if (sourceElem.getClassNames() != null && sourceElem.getClassNames().size() > 0) {
+                clonedElem.classNames = new ArrayList<>(sourceElem.getClassNames());
+            }
+
+            if (sourceElem.getChildElements() != null && sourceElem.getChildElements().size() > 0) {
+                List<SVGElement> clonedChildren = new ArrayList<>();
+                sourceElem.getChildElements().stream().forEach(child -> {
+                    try {
+                        clonedChildren.add((SVGElement) child.clone());
+                    } catch (CloneNotSupportedException cnse) {
+                        cnse.printStackTrace();
+                    }
+                });
+            }
+
+            if (sourceElem.getAttributeMap() != null && sourceElem.getAttributeMap().size() > 0) {
+                Map<AttributeType, SVGAttribute> clonedAttributes = new LinkedHashMap<>();
+                sourceElem.getAttributeMap().forEach((k,v) -> {
+                    try {
+                        clonedAttributes.put(k,v.clone());
+                    } catch (CloneNotSupportedException cnse) {
+                        cnse.printStackTrace();
+                    }
+                });
+                clonedElem.attributeMap = clonedAttributes;
+            }
+
+        }
+
+        clonedElem.addClassName("justgotcloned");
+        return clonedElem;
     }
 
 }
