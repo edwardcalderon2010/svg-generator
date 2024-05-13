@@ -23,4 +23,20 @@ public class SVGResourceProperties {
     @Getter
     @Setter
     private String masterXMLresource;
+
+    @Getter
+    @Setter
+    private String outputFile;
+
+    @Getter
+    @Setter
+    private String htmlTemplatePath;
+
+    @Getter
+    @Setter
+    private String htmlHeaderTemplate;
+
+    @Getter
+    @Setter
+    private String htmlFooterTemplate;
 }

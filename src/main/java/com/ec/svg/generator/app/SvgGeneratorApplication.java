@@ -23,7 +23,7 @@ public class SvgGeneratorApplication {
 		SVGLoader loader = ctx.getBean(SVGLoader.class);
 		loader.load();
 		Generator generator = ctx.getBean(Generator.class);
-		String svgText = "i will be like the million fold stars in the sky";
+		String svgText = "essence of the perfection of wisdom the blessed mother homage to the perfection of wisdom the blessed mother thus i have heard";
 		generator.generateSVGFromString(svgText);
 
 		//testClonePathTag();

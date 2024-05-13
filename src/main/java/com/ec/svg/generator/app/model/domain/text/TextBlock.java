@@ -42,4 +42,25 @@ public class TextBlock {
 
     }
 
+    public int getLineCount(String partialLine) {
+        int lineCount = -1;
+
+        if (StringUtils.hasText(partialLine)) {
+
+            for (String nextLine : textLines) {
+                if (nextLine.startsWith(partialLine)) {
+                    lineCount++;
+                    break;
+                } else {
+                    if (partialLine.startsWith(nextLine)) {
+                        lineCount++;
+                        partialLine = partialLine.substring(nextLine.length());
+                    }
+                }
+            }
+        }
+
+        return lineCount;
+    }
+
 }

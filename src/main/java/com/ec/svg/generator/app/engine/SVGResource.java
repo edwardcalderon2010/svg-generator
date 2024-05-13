@@ -1,18 +1,18 @@
 package com.ec.svg.generator.app.engine;
 
+import com.ec.svg.generator.app.config.SVGResourceProperties;
 import com.ec.svg.generator.app.model.domain.FontCharacter;
 import com.ec.svg.generator.app.model.domain.LetterDefinition;
 import com.ec.svg.generator.app.model.domain.tags.GroupTag;
 import com.ec.svg.generator.app.model.domain.tags.MaskTag;
 import com.ec.svg.generator.app.model.domain.text.TextBlock;
-import com.ec.svg.generator.app.util.StringUtils;
+import com.ec.svg.generator.app.util.FileUtils;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static com.ec.svg.generator.app.model.domain.FontCharacter.unicodeKeyToChar;
 
@@ -21,7 +21,9 @@ public class SVGResource {
 
     private static final Logger logger = LoggerFactory.getLogger(SVGResource.class);
 
-    public static final String SVG_TAG_HEADER="<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 1500 1000\">";
+    public static final String SVG_WIDTH_KEY = "WIDTH";
+    public static final String SVG_HEIGHT_KEY = "HEIGHT";
+    public static final String SVG_TAG_HEADER="<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 " + SVG_WIDTH_KEY + " " + SVG_HEIGHT_KEY + "\">";
 
     @Getter
     private Map<Integer, LetterDefinition> fontDefinitions = new LinkedHashMap<>();
@@ -37,6 +39,15 @@ public class SVGResource {
 
     private TextBlock textBlock;
 
+    private BigDecimal textBlockWidth = BigDecimal.ZERO;
+
+    private BigDecimal textBlockHeight = BigDecimal.ZERO;
+
+    private SVGResourceProperties svgResourceProperties;
+
+    public SVGResource(SVGResourceProperties svgResourceProperties) {
+        this.svgResourceProperties = svgResourceProperties;
+    }
 
     public void init(Set<LetterDefinition> letterAlphabet, String inputString) {
         // Pre-load font alphabet and definitions
@@ -88,14 +99,28 @@ public class SVGResource {
 
     public void generate() {
 
+        StringBuilder renderedString = new StringBuilder();
         textBlock.getTextLines().forEach(line -> {
             StringBuilder workingString = new StringBuilder();
+
             line.chars().boxed().forEach(chr -> {
-                addChar(chr, workingString.toString(), textBlock.getTextLines().indexOf(line));
-                workingString.append(String.valueOf((char)chr.intValue()));
+                String charString = String.valueOf((char)chr.intValue());
+                addChar(chr, workingString.toString(), textBlock.getLineCount(renderedString.append(charString).toString()));
+                workingString.append(charString);
             });
         });
 
+        textBlockWidth = textBlock.getTextLines()
+                .stream()
+                .map(this::calculateCharSequenceWidth)
+                .max(BigDecimal::compareTo)
+                .orElse(BigDecimal.ZERO)
+                .add(new BigDecimal(100));
+
+        textBlockHeight = FontCharacter.FONT_HEIGHT.multiply(new BigDecimal(textBlock.getTextLines().size()));
+
+        logger.info("Setting textBlock width: " + textBlockWidth);
+        logger.info("Setting textBlock height: " + textBlockHeight);
     }
 
     private void addChar(int unicodeKey, String targetString, int lineCount) {
@@ -135,10 +160,12 @@ public class SVGResource {
 
     public String render() {
 
-        logger.info("Rendering " + String.join("", textBlock.getTextLines()));
+        logger.info("Rendering " + String.join(" ", textBlock.getTextLines()));
 
         StringBuilder sb = new StringBuilder();
-        sb.append(SVG_TAG_HEADER + "\n");
+
+        sb.append(FileUtils.readFile(svgResourceProperties.getHtmlTemplatePath().concat(svgResourceProperties.getHtmlHeaderTemplate()))+"\n");
+        sb.append(SVG_TAG_HEADER.replace(SVG_WIDTH_KEY, textBlockWidth.toString()).replace(SVG_HEIGHT_KEY, textBlockHeight.toString()) + "\n");
         sb.append("\t<defs>\n");
 
         fontDefinitions.forEach((k,v) -> sb.append(v.renderPathDefinitions() + "\n") );
@@ -152,6 +179,7 @@ public class SVGResource {
         sb.append("</g>");
 
         sb.append("\t</svg>\n");
+        sb.append(FileUtils.readFile(svgResourceProperties.getHtmlTemplatePath().concat(svgResourceProperties.getHtmlFooterTemplate()))+"\n");
 
 
         return sb.toString();

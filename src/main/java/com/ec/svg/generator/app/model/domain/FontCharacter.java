@@ -13,6 +13,7 @@ public class FontCharacter {
     public static final Integer UNICODE_FOR_SPACE = Integer.valueOf(32);
     public static final String KEY_FOR_033_UNICODE = "exc";
 
+    public static final BigDecimal FONT_HEIGHT = new BigDecimal(322);
     public static final FontCharacter BLANK_SPACE = new FontCharacter(Integer.valueOf(32),
             new BigDecimal("00.00"),
             new BigDecimal("50.00"),
