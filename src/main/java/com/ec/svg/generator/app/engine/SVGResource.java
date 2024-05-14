@@ -144,7 +144,7 @@ public class SVGResource {
 
             if (fontDefinitions.containsKey(fontChar.getUnicodeKey())) {
                 LetterDefinition letterDef = fontDefinitions.get(fontChar.getUnicodeKey());
-                String charSeqKey = unicodeKeyToChar(fontChar.getUnicodeKey()) + charRepeat + "_" + lineCount;
+                String charSeqKey = unicodeKeyToChar(fontChar.getUnicodeKey()) + "_" + fontChar.getUnicodeKey() + "_" + charRepeat + "_" + lineCount;
                 BigDecimal yOffset = new BigDecimal("322.00");
                 BigDecimal yMod = new BigDecimal(lineCount);
 

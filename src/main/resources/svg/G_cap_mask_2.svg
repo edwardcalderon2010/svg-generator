@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
+              "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="33.3333in" height="1.33333in"
+     viewBox="0 0 10000 400">
+  <path id="G_cap_mask_2"
+        fill="none" stroke="black" stroke-width="1"
+        d="M 177.75,32.75
+           C 166.00,17.12 113.50,42.12 83.38,119.62
+             48.50,225.62 133.45,216.55 175.64,132.55
+             180.50,123.62 193.75,121.88 186.00,137.62
+             143.75,316.50 74.50,327.50 47.25,309.50
+             16.00,276.75 99.50,203.25 149.50,211.50
+             204.75,218.25 217.00,187.00 243.75,133.50" />
+</svg>

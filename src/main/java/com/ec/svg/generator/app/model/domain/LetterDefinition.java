@@ -2,13 +2,11 @@ package com.ec.svg.generator.app.model.domain;
 
 import com.ec.svg.generator.app.dto.PathDTO;
 import com.ec.svg.generator.app.interfaces.SVGElement;
-import com.ec.svg.generator.app.model.domain.enums.AttributeType;
+import com.ec.svg.generator.app.model.domain.enums.SymbolicUnicodeChar;
 import com.ec.svg.generator.app.model.domain.enums.TagName;
 import com.ec.svg.generator.app.model.domain.tags.GroupTag;
 import com.ec.svg.generator.app.model.domain.tags.MaskTag;
 import com.ec.svg.generator.app.model.domain.tags.PathTag;
-import com.ec.svg.generator.app.model.entity.Path;
-import com.ec.svg.generator.app.util.StringUtils;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,12 +22,22 @@ public class LetterDefinition extends FontCharacter {
     private static final Logger logger = LoggerFactory.getLogger(LetterDefinition.class);
 
     private static final String PATH_LABEL_SUFFIX = "_path";
+
+    private static final String PATH_LABEL_CAP_SUFFIX = "_cap_path";
     private static final String MASK_LABEL_SUFFIX = "_mask";
 
     @Getter
     private List<PathTag> pathDefinitions = new ArrayList<>();
     private List<PathTag> maskDefinitions = new ArrayList<>();
 
+
+    public static String getPathLabel(Integer unicodeKey) {
+        String result = PATH_LABEL_SUFFIX;
+        if (isUpperCaseCharacter(unicodeKey)) {
+            result = PATH_LABEL_CAP_SUFFIX;
+        }
+        return result;
+    }
     private LetterDefinition(Builder builder) {
         super(builder.unicodeKey);
         this.pathDefinitions = builder.pathDefinitions;
@@ -37,14 +45,28 @@ public class LetterDefinition extends FontCharacter {
 
         fontBoundsMinX = getMinXBounds(pathDefinitions);
         fontBoundsMaxX = getMaxXBounds(pathDefinitions);
+
         fontWidthMinX = getMinXReferencePointAtY(pathDefinitions);
         fontWidthMaxX = getMaxXReferencePointAtY(pathDefinitions);
-        fontWidth = fontWidthMaxX.subtract(fontWidthMinX);
+
+        if (isUpperCaseCharacter(unicodeKey)) {
+
+            switch (unicodeKeyToChar(unicodeKey)) {
+                case "C":
+                case "E":
+                case "G":
+                    fontWidthMinX = fontBoundsMinX;
+                    break;
+            }
+        }
 
         // Reset fontminX to zero for special case char '!'
-        if (unicodeKey.equals(FontCharacter.UNICODE_FOR_EXC_KEY)) {
+        if (isSymbolicCharacter(unicodeKey)) {
             fontWidthMinX = BigDecimal.ZERO;
+            fontWidthMaxX = fontBoundsMaxX;
         }
+
+        fontWidth = fontWidthMaxX.subtract(fontWidthMinX);
 
         logger.info("Calculated font width: " + fontWidth + " " + unicodeKeyToChar(this.getUnicodeKey(),Boolean.TRUE));
         logger.info("## Min X Width: " + fontWidthMinX);
@@ -94,7 +116,7 @@ public class LetterDefinition extends FontCharacter {
             maskDefinitions.forEach(pathTag -> groupTags.add(
                     new GroupTag.Builder(maskIdPrefix + "_" + (maskDefinitions.indexOf(pathTag) + 1))
                             .childUseTag(xOffset,yOffset)
-                            .useHref(unicodeKeyToChar(unicodeKey) + PATH_LABEL_SUFFIX + "_" + (maskDefinitions.indexOf(pathTag) + 1))
+                            .useHref(unicodeKeyToChar(unicodeKey) + getPathLabel(unicodeKey) + "_" + (maskDefinitions.indexOf(pathTag) + 1))
                             .build()
             ));
         }

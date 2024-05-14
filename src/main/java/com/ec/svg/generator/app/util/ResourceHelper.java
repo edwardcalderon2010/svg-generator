@@ -2,6 +2,7 @@ package com.ec.svg.generator.app.util;
 
 import com.ec.svg.generator.app.dto.AuditDetailsDTO;
 import com.ec.svg.generator.app.dto.PathDTO;
+import com.ec.svg.generator.app.model.domain.enums.SymbolicUnicodeChar;
 import com.ec.svg.generator.app.model.entity.AuditDetails;
 import com.ec.svg.generator.app.model.entity.Path;
 import com.ec.svg.generator.app.model.entity.PathRepository;
@@ -20,16 +21,13 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.w3c.dom.NodeList;
 
-import static com.ec.svg.generator.app.model.domain.FontCharacter.KEY_FOR_033_UNICODE;
 import static com.ec.svg.generator.app.util.StringUtils.REGEX_PATH_UNICODE_ID;
 import static com.ec.svg.generator.app.util.StringUtils.REGEX_PATH_SEQUENCE;
 
@@ -60,7 +58,7 @@ public class ResourceHelper {
 
 
         List<Path> existingPaths = new ArrayList<>();
-        pathRepository.findAll().forEach(elem -> existingPaths.add(elem));
+        //pathRepository.findAll().forEach(elem -> existingPaths.add(elem));
 
         if (existingPaths.size() < 1) {
             if (masterFile.exists() ) {
@@ -93,8 +91,12 @@ public class ResourceHelper {
     private void persistPathDTOs(List<PathDTO> inputDTOs, PathRepository pathRepository, ModelMapper modelMapper) {
 
         if (modelMapper != null) {
-            logger.info("Persisting DTOs");
-            inputDTOs.forEach(pathDTO -> pathRepository.save(mapToPath(pathDTO,modelMapper)));
+            List<PathDTO> targetDTOs = inputDTOs.stream()
+                    .filter(elem -> pathRepository.findByUnicode(elem.getUnicode()).isEmpty())
+                    .sorted(Comparator.comparing(PathDTO::getUnicode))
+                    .toList();
+            targetDTOs.forEach(elem -> logger.info("Persisting DTO: " + elem.getUnicode() + " " + elem.getGlyphName()));
+            targetDTOs.forEach(pathDTO -> pathRepository.save(mapToPath(pathDTO,modelMapper)));
         }
     }
 
@@ -166,11 +168,7 @@ public class ResourceHelper {
 
         if (rawUnicode.length() == 3) {
 
-            if (rawUnicode.equals(KEY_FOR_033_UNICODE)) {
-                // Process a special character; e.g. '!'
-                // which will be represented as the id "exc_path_1"
-                rawUnicode = "!";
-            }
+            rawUnicode = SymbolicUnicodeChar.getSymbolAsString(rawUnicode);
 
         }
 

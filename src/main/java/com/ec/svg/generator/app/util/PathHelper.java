@@ -17,6 +17,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import static com.ec.svg.generator.app.model.domain.FontCharacter.FONT_MAX_X_REFERENCE_HEIGHT;
+import static com.ec.svg.generator.app.model.domain.FontCharacter.FONT_MIN_X_REFERENCE_HEIGHT;
 import static com.ec.svg.generator.app.model.domain.enums.CommandType.M;
 import static com.ec.svg.generator.app.model.domain.enums.CommandType.C;
 import static com.ec.svg.generator.app.model.domain.enums.CommandType.Z;
@@ -24,8 +26,6 @@ import static com.ec.svg.generator.app.model.domain.enums.CommandType.Z;
 public class PathHelper {
     private static final Logger logger = LoggerFactory.getLogger(PathHelper.class);
 
-    public static final String FONT_MAX_X_REFERENCE_HEIGHT = "140.00";
-    public static final String FONT_MIN_X_REFERENCE_HEIGHT = "137.00";
 
     public static String G_PATH_1 = "M 140.53,139.05 " +
             "C 141.14,136.90 142.18,135.21 143.62,133.98 " +
@@ -280,33 +280,6 @@ public class PathHelper {
         return getReferenceCurve(maxXParam,svgElements);
     }
 
-    public static void testClonePathTag() {
-        PathTag path1 = new PathTag
-                .Builder(PathHelper.G_PATH_1,"g_path_1")
-                .pathStroke("#fff")
-                .pathStrokeFill("none")
-                .pathStrokeWidth("17")
-                .className("strokeMask")
-                .build();
-
-        try {
-            PathTag path2 = (PathTag)path1.clone();
-            path2.setId("g_path_2");
-            path2.addClassName("strokeMask2");
-            path2.addAttribute(PathHelper.parseGlyphPath(PathHelper.G_PATH_2));
-
-            logger.info(path1.render() + "\n");
-            logger.info(path2.render() + "\n");
-
-            path1.applyXOffset(new BigDecimal("10.00"));
-            path2.applyXOffset(new BigDecimal("50.00"));
-            logger.info(path1.render() + "\n");
-            logger.info(path2.render() + "\n");
-
-        } catch (CloneNotSupportedException cnse) {
-            cnse.printStackTrace();
-        }
-    }
 
     public static BigDecimal getReferenceCurve(ParameterContext paramContext, List<? extends SVGElement> svgElements) {
         BigDecimal result = BigDecimal.ZERO;

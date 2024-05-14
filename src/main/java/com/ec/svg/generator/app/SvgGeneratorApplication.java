@@ -6,8 +6,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
-import static com.ec.svg.generator.app.util.PathHelper.testClonePathTag;
-
 @SpringBootApplication
 public class SvgGeneratorApplication {
 
@@ -23,7 +21,7 @@ public class SvgGeneratorApplication {
 		SVGLoader loader = ctx.getBean(SVGLoader.class);
 		loader.load();
 		Generator generator = ctx.getBean(Generator.class);
-		String svgText = "essence of the perfection of wisdom the blessed mother homage to the perfection of wisdom the blessed mother thus i have heard";
+		String svgText = "A B C D E F G H I";
 		generator.generateSVGFromString(svgText);
 
 		//testClonePathTag();
