@@ -2,8 +2,12 @@ package com.ec.svg.generator.app.model.domain;
 
 import com.ec.svg.generator.app.dto.PathDTO;
 import com.ec.svg.generator.app.interfaces.SVGElement;
+import com.ec.svg.generator.app.model.domain.enums.AxisPlane;
+import com.ec.svg.generator.app.model.domain.enums.MathBound;
 import com.ec.svg.generator.app.model.domain.enums.SymbolicUnicodeChar;
 import com.ec.svg.generator.app.model.domain.enums.TagName;
+import com.ec.svg.generator.app.model.domain.path.Coordinate;
+import com.ec.svg.generator.app.model.domain.path.ParameterContext;
 import com.ec.svg.generator.app.model.domain.tags.GroupTag;
 import com.ec.svg.generator.app.model.domain.tags.MaskTag;
 import com.ec.svg.generator.app.model.domain.tags.PathTag;
@@ -55,7 +59,36 @@ public class LetterDefinition extends FontCharacter {
                 case "C":
                 case "E":
                 case "G":
+                case "L":
+                case "O":
+                case "Q":
+                case "U":
+                case "V":
+                case "W":
+                case "X":
+                case "Y":
+                case "Z":
                     fontWidthMinX = fontBoundsMinX;
+                    break;
+            }
+
+            switch (unicodeKeyToChar(unicodeKey)) {
+                case "F":
+                case "I":
+                case "J":
+                case "N":
+                case "O":
+                case "P":
+                case "Q":
+                case "S":
+                case "T":
+                case "U":
+                case "V":
+                case "W":
+                    Coordinate targetY = new Coordinate(new BigDecimal("52.00"), AxisPlane.Y);
+                    ParameterContext maxXParamContainingY = new ParameterContext(MathBound.MAX, AxisPlane.X, targetY);
+
+                    fontWidthMaxX = getReferencePoint(maxXParamContainingY,pathDefinitions).getXValue();
                     break;
             }
         }
