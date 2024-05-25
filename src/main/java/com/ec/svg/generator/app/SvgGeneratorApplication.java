@@ -20,15 +20,17 @@ public class SvgGeneratorApplication {
 
 		SVGLoader loader = ctx.getBean(SVGLoader.class);
 		loader.load();
-		Generator generator = ctx.getBean(Generator.class);
-		String svgText = "";
-		svgText = "Essence of the perfection of wisdom, the Blessed Mother. Homage to the perfection of wisdom, the Blessed Mother. " +
-		"Thus I have heard. At one time the Blessed One was dwelling in Rajagriha on Massed Vultures Mountain together with a great assembly of monks and nuns and a great assembly of Bodhisattvas. " +
-		"At that time the Blessed One was absorbed in the concentration of the countless aspects of phenomena called, Profound Illumination.";
+//		Generator generator = ctx.getBean(Generator.class);
+//		String svgText = "";
+//		svgText = "Essence of the perfection of wisdom, the Blessed Mother. Homage to the perfection of wisdom, the Blessed Mother. " +
+//		"Thus I have heard. At one time the Blessed One was dwelling in Rajagriha on Massed Vultures Mountain together with a great assembly of monks and nuns and a great assembly of Bodhisattvas. " +
+//		"At that time the Blessed One was absorbed in the concentration of the countless aspects of phenomena called, Profound Illumination.";
 //		svgText = "Go placidly amid the noise and the haste, and remember what peace there may be in silence. As far as possible, without surrender, be on good terms with all persons.";
 //		svgText = "Congratulations Ben & Iryna!";
 //		svgText = "A B C D E F G H I J K L M N O P Q R S T U V W X Y Z";
-		generator.generateSVGFromString(svgText);
+//		svgText = "Essence of the perfection of wisdom, the Blessed Mother. Homage to the perfection of wisdom, the Blessed Mother. Thus I have heard." +
+//		"At one time the Blessed One was dwelling in Rajagriha on Massed Vultures Mountain together with a great assembly of monks and nuns and a great assembly of Bodhisattvas.";
+//		generator.generateSVGFromString(svgText);
 
 		//testClonePathTag();
 

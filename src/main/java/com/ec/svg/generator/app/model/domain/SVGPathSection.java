@@ -70,9 +70,9 @@ public class SVGPathSection implements Cloneable {
                 .reduce((a,b) -> a.compare(paramContext,b))
                 .orElse(null);
 
-        if (result != null)  {
-            logger.info("Got " + paramContext.getMathBound() + " curve: " + result.toString());
-        }
+//        if (result != null)  {
+//            logger.info("Got " + paramContext.getMathBound() + " curve: " + result.toString());
+//        }
 
         return result;
 
@@ -88,9 +88,9 @@ public class SVGPathSection implements Cloneable {
                 .reduce((a,b) -> a.compare(paramContext,b))
                 .orElse(null);
 
-        if (result != null)  {
-            logger.info("Got container curve: " + result.toString());
-        }
+//        if (result != null)  {
+//            logger.info("Got container curve: " + result.toString());
+//        }
 
         return result;
     }

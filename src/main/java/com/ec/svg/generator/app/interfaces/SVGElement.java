@@ -117,7 +117,7 @@ public abstract class SVGElement implements XMLFragment, Cloneable {
         if (this instanceof PathTag) {
 
             PathTag sourceElem = (PathTag) this;
-            logger.info("SVGElement: cloning from: " + sourceElem.getAttributeMap().get(id).getValue());
+            //logger.info("SVGElement: cloning from: " + sourceElem.getAttributeMap().get(id).getValue());
 
             clonedElem = (SVGElement) super.clone();
 

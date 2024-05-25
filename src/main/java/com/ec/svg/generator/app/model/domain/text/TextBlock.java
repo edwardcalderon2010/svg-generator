@@ -11,7 +11,7 @@ import java.util.List;
 
 public class TextBlock {
 
-    public static final Integer MAX_LINE_CHAR_COUNT = 64;
+    public static final Integer MAX_LINE_CHAR_COUNT = 14;
 
     private static final Logger logger = LoggerFactory.getLogger(TextBlock.class);
 

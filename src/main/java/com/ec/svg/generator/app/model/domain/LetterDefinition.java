@@ -4,7 +4,6 @@ import com.ec.svg.generator.app.dto.PathDTO;
 import com.ec.svg.generator.app.interfaces.SVGElement;
 import com.ec.svg.generator.app.model.domain.enums.AxisPlane;
 import com.ec.svg.generator.app.model.domain.enums.MathBound;
-import com.ec.svg.generator.app.model.domain.enums.SymbolicUnicodeChar;
 import com.ec.svg.generator.app.model.domain.enums.TagName;
 import com.ec.svg.generator.app.model.domain.path.Coordinate;
 import com.ec.svg.generator.app.model.domain.path.ParameterContext;
@@ -80,7 +79,6 @@ public class LetterDefinition extends FontCharacter {
                 case "O":
                 case "P":
                 case "Q":
-                case "S":
                 case "T":
                 case "U":
                 case "V":
@@ -89,6 +87,20 @@ public class LetterDefinition extends FontCharacter {
                     ParameterContext maxXParamContainingY = new ParameterContext(MathBound.MAX, AxisPlane.X, targetY);
 
                     fontWidthMaxX = getReferencePoint(maxXParamContainingY,pathDefinitions).getXValue();
+                    break;
+                case "S":
+                    fontWidthMaxX = new BigDecimal(193);
+                    break;
+
+            }
+        } else {
+            switch (unicodeKeyToChar(unicodeKey)) {
+                case "s":
+                case "z":
+                    fontWidthMinX = fontWidthMinX.subtract(new BigDecimal(2));
+                    break;
+                case "e":
+                    fontWidthMinX = fontWidthMinX.add(new BigDecimal(2));
                     break;
             }
         }
@@ -101,11 +113,11 @@ public class LetterDefinition extends FontCharacter {
 
         fontWidth = fontWidthMaxX.subtract(fontWidthMinX);
 
-        logger.info("Calculated font width: " + fontWidth + " " + unicodeKeyToChar(this.getUnicodeKey(),Boolean.TRUE));
-        logger.info("## Min X Width: " + fontWidthMinX);
-        logger.info("## Max X Width: " + fontWidthMaxX);
-        logger.info("## Min X Bounds: " + fontBoundsMinX);
-        logger.info("## Max X Bounds: " + fontBoundsMaxX);
+//        logger.info("Calculated font width: " + fontWidth + " " + unicodeKeyToChar(this.getUnicodeKey(),Boolean.TRUE));
+//        logger.info("## Min X Width: " + fontWidthMinX);
+//        logger.info("## Max X Width: " + fontWidthMaxX);
+//        logger.info("## Min X Bounds: " + fontBoundsMinX);
+//        logger.info("## Max X Bounds: " + fontBoundsMaxX);
     }
 
     public String renderPathDefinitions() {
@@ -166,7 +178,6 @@ public class LetterDefinition extends FontCharacter {
 
     @Override
     public boolean equals(Object obj) {
-        logger.info("### EQUALS: ");
         return super.equals(obj);
     }
 

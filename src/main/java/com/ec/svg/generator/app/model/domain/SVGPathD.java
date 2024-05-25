@@ -70,7 +70,6 @@ public class SVGPathD extends SVGAttribute implements Moveable, Cloneable {
 
     @Override
     public void applyXOffset(BigDecimal xOffset) {
-        logger.info("Calling applyXOffset");
         if (pathSections != null && pathSections.size() > 0) {
             pathSections.forEach(
                     elem -> elem.getPathCommands()
@@ -87,7 +86,6 @@ public class SVGPathD extends SVGAttribute implements Moveable, Cloneable {
 
     @Override
     public void applyYOffset(BigDecimal yOffset) {
-        logger.info("Calling applyYOffset");
         if (pathSections != null && pathSections.size() > 0) {
             pathSections.forEach(
                     elem -> elem.getPathCommands()

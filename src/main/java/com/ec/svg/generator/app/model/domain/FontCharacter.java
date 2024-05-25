@@ -124,7 +124,6 @@ public class FontCharacter {
 
         if (obj instanceof FontCharacter) {
             FontCharacter target = (FontCharacter) obj;
-            logger.info("EQUALS: Comparing " + this.unicodeKey + " with " + target.unicodeKey);
             if (this.unicodeKey.equals(target.unicodeKey)) {
                 isEqual = true;
             }

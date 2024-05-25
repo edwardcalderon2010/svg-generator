@@ -64,7 +64,7 @@ public class SVGResource {
         List<String> words = Arrays.asList(inputString.split(" "));
         words.forEach(textBlock::addWord);
 
-        textBlock.getTextLines().forEach(line -> logger.info("Got line: >" + line + "<"));
+        textBlock.getTextLines().forEach(line -> logger.info("Got TextBlock line: >" + line + "<"));
 
     }
     private BigDecimal calculateCharSequenceWidth(String inputString) {
@@ -79,7 +79,7 @@ public class SVGResource {
                     .mapToObj(chr -> fontAlphabet.get(chr).getFontWidth())
                     .reduce(BigDecimal::add)
                     .get();
-            logger.info(" ### Char sequence width: " + currentCharSeqWidth);
+            //logger.info(" ### Char sequence width: " + currentCharSeqWidth);
             charSeqWidth = currentCharSeqWidth.add(startCharMinX);
         }
 
@@ -119,13 +119,13 @@ public class SVGResource {
 
         textBlockHeight = FontCharacter.FONT_HEIGHT.multiply(new BigDecimal(textBlock.getTextLines().size()));
 
-        logger.info("Setting textBlock width: " + textBlockWidth);
-        logger.info("Setting textBlock height: " + textBlockHeight);
+        //logger.info("Setting textBlock width: " + textBlockWidth);
+        //logger.info("Setting textBlock height: " + textBlockHeight);
     }
 
     private void addChar(int unicodeKey, String targetString, int lineCount) {
 
-        logger.info("####### Adding char " + unicodeKey + " to string >" + targetString + "< on line " + lineCount);
+        //logger.info("####### Adding char " + unicodeKey + " to string >" + targetString + "< on line " + lineCount);
 
         if (fontAlphabet.containsKey(unicodeKey)) {
             FontCharacter fontChar = fontAlphabet.get(unicodeKey);
@@ -140,7 +140,7 @@ public class SVGResource {
                     .filter(chrInt -> Integer.valueOf(chrInt).equals(fontChar.getUnicodeKey()))
                     .count();
 
-            logger.info("###### Rendering " + unicodeKeyToChar(fontChar.getUnicodeKey()) + " of " + targetString + " at " + renderX);
+            //logger.info("###### Rendering " + unicodeKeyToChar(fontChar.getUnicodeKey()) + " of " + targetString + " at " + renderX);
 
             if (fontDefinitions.containsKey(fontChar.getUnicodeKey())) {
                 LetterDefinition letterDef = fontDefinitions.get(fontChar.getUnicodeKey());
@@ -164,7 +164,7 @@ public class SVGResource {
 
         StringBuilder sb = new StringBuilder();
 
-        sb.append(FileUtils.readFile(svgResourceProperties.getHtmlTemplatePath().concat(svgResourceProperties.getHtmlHeaderTemplate()))+"\n");
+        //sb.append(FileUtils.readFile(svgResourceProperties.getHtmlTemplatePath().concat(svgResourceProperties.getHtmlHeaderTemplate()))+"\n");
         sb.append(SVG_TAG_HEADER.replace(SVG_WIDTH_KEY, textBlockWidth.toString()).replace(SVG_HEIGHT_KEY, textBlockHeight.toString()) + "\n");
         sb.append("\t<defs>\n");
 
@@ -179,9 +179,19 @@ public class SVGResource {
         sb.append("</g>");
 
         sb.append("\t</svg>\n");
-        sb.append(FileUtils.readFile(svgResourceProperties.getHtmlTemplatePath().concat(svgResourceProperties.getHtmlFooterTemplate()))+"\n");
+        //sb.append(FileUtils.readFile(svgResourceProperties.getHtmlTemplatePath().concat(svgResourceProperties.getHtmlFooterTemplate()))+"\n");
 
 
         return sb.toString();
     }
+
+    public String renderHTML() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(FileUtils.readFile(svgResourceProperties.getHtmlTemplatePath().concat(svgResourceProperties.getHtmlHeaderTemplate()))+"\n");
+        sb.append(render());
+        sb.append(FileUtils.readFile(svgResourceProperties.getHtmlTemplatePath().concat(svgResourceProperties.getHtmlFooterTemplate()))+"\n");
+        return sb.toString();
+
+    }
+
 }

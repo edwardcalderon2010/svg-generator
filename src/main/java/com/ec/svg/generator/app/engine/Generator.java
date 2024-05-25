@@ -57,6 +57,32 @@ public class Generator {
         }
     }
 
+    public String generateSVGOutput(String inputString) {
+        String result = "";
+        if (StringUtils.hasText(inputString)) {
+            logger.info("Generating SVG from: " + inputString);
+            SVGResource svgResource = new SVGResource(svgResourceProperties);
+            svgResource.init(assembleLetterDefinitionAlphabet(inputString), inputString);
+            svgResource.generate();
+            //result = StringUtils.prettyFormat(svgResource.render(), 4);
+            result = svgResource.render();
+        }
+        return result;
+    }
+
+    public String generateSVGEmbedded(String inputString) {
+        String result = "";
+        if (StringUtils.hasText(inputString)) {
+            logger.info("Generating SVG from: " + inputString);
+            SVGResource svgResource = new SVGResource(svgResourceProperties);
+            svgResource.init(assembleLetterDefinitionAlphabet(inputString), inputString);
+            svgResource.generate();
+            //result = StringUtils.prettyFormat(svgResource.render(), 4);
+            result = svgResource.renderHTML();
+        }
+        return result;
+    }
+
     private Set<LetterDefinition> assembleLetterDefinitionAlphabet(String inputString) {
 
         Set<Integer> unicodeSet = new HashSet<>();
@@ -80,19 +106,4 @@ public class Generator {
         return alphabet;
     }
 
-//    private void fetchLetterByUnicode(Integer unicode, SVGResource svgResource) {
-//        //logger.info("Processing letter for char: " + unicode);
-//        List<PathDTO> letterPaths = pathService.getByUnicode(unicode);
-//
-//        if (letterPaths != null && letterPaths.size() > 0) {
-//            //svgResource.addChar(unicode);
-//            //letterPaths.stream().forEach(path -> logger.info("Fetched: " + path.getGlyphName()));
-//            svgResource.addFontChar( new LetterDefinition
-//                            .Builder(unicode)
-//                            .pathDefinitions(letterPaths.stream().filter(pathDTO -> !pathDTO.getIsMask()).toList())
-//                            .maskDefinitions(letterPaths.stream().filter(PathDTO::getIsMask).toList())
-//                            .build()
-//                    );
-//        }
-//    }
 }
