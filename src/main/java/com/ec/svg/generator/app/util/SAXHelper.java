@@ -11,6 +11,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class SAXHelper {
 
@@ -37,6 +38,23 @@ public class SAXHelper {
 
         try {
             Document doc = builder.parse(new File(resource));
+            doc.getDocumentElement().normalize();
+            result = doc.getElementsByTagName("path");
+        } catch (SAXException sae) {
+            logger.info("Exception parsing XML: " + sae.toString());
+
+        } catch (IOException ioe) {
+            logger.info("Exception reading XML: " + ioe.getMessage());
+            ioe.printStackTrace();
+        }
+        return result;
+    }
+    public static NodeList getPathXMLNodes(InputStream inputStream) {
+        DocumentBuilder builder = getDocumentBuilder();
+        NodeList result = null;
+
+        try {
+            Document doc = builder.parse(inputStream);
             doc.getDocumentElement().normalize();
             result = doc.getElementsByTagName("path");
         } catch (SAXException sae) {

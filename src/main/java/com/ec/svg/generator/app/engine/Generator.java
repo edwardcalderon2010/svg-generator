@@ -33,29 +33,29 @@ public class Generator {
         this.svgResourceProperties = svgResourceProperties;
     }
 
-    public void generateSVGFromString(String inputString) {
-
-        if (StringUtils.hasText(inputString)) {
-            logger.info("Generating SVG from: " + inputString);
-            SVGResource svgResource = new SVGResource(svgResourceProperties);
-            svgResource.init(assembleLetterDefinitionAlphabet(inputString), inputString);
-            svgResource.generate();
-            //inputString.chars().forEach(svgResource::addChar);
-            //logger.info(svgResource.render());
-
-            File outputFile = new File(svgResourceProperties.getDefaultSVGPath().concat(svgResourceProperties.getOutputFile()));
-            try {
-                BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
-                writer.write(StringUtils.prettyFormat(svgResource.render(), 4));
-                //writer.write(svgResource.render());
-                writer.flush();
-                writer.close();
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
-            }
-
-        }
-    }
+//    public void generateSVGFromString(String inputString) {
+//
+//        if (StringUtils.hasText(inputString)) {
+//            logger.info("Generating SVG from: " + inputString);
+//            SVGResource svgResource = new SVGResource(svgResourceProperties);
+//            svgResource.init(assembleLetterDefinitionAlphabet(inputString), inputString);
+//            svgResource.generate();
+//            //inputString.chars().forEach(svgResource::addChar);
+//            //logger.info(svgResource.render());
+//
+//            File outputFile = new File(svgResourceProperties.getDefaultSVGPath().concat(svgResourceProperties.getOutputFile()));
+//            try {
+//                BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
+//                writer.write(StringUtils.prettyFormat(svgResource.render(), 4));
+//                //writer.write(svgResource.render());
+//                writer.flush();
+//                writer.close();
+//            } catch (IOException ioe) {
+//                ioe.printStackTrace();
+//            }
+//
+//        }
+//    }
 
     public String generateSVGOutput(String inputString) {
         String result = "";

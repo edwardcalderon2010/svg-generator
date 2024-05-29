@@ -10,7 +10,10 @@ import com.ec.svg.generator.app.util.FileUtils;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -44,6 +47,12 @@ public class SVGResource {
     private BigDecimal textBlockHeight = BigDecimal.ZERO;
 
     private SVGResourceProperties svgResourceProperties;
+
+    @Value("${resources.htmlHeaderTemplate}")
+    private Resource svgHTMLHeaderTemplate;
+
+    @Value("${resources.htmlFooterTemplate}")
+    private Resource svgHTMLFooterTemplate;
 
     public SVGResource(SVGResourceProperties svgResourceProperties) {
         this.svgResourceProperties = svgResourceProperties;
@@ -187,9 +196,20 @@ public class SVGResource {
 
     public String renderHTML() {
         StringBuilder sb = new StringBuilder();
-        sb.append(FileUtils.readFile(svgResourceProperties.getHtmlTemplatePath().concat(svgResourceProperties.getHtmlHeaderTemplate()))+"\n");
+
+        String htmlHeader = "";
+        String htmlFooter = "";
+
+        try {
+            htmlHeader = FileUtils.readFile(svgHTMLHeaderTemplate.getFile().getPath());
+            htmlFooter = FileUtils.readFile(svgHTMLFooterTemplate.getFile().getPath());
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+
+        sb.append(htmlHeader+"\n");
         sb.append(render());
-        sb.append(FileUtils.readFile(svgResourceProperties.getHtmlTemplatePath().concat(svgResourceProperties.getHtmlFooterTemplate()))+"\n");
+        sb.append(htmlFooter+"\n");
         return sb.toString();
 
     }

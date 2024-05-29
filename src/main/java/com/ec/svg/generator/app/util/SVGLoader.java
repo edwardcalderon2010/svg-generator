@@ -9,11 +9,14 @@ import com.ec.svg.generator.app.model.entity.PathRepository;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -39,25 +42,33 @@ public class SVGLoader {
 
     private PathRepository pathRepository;
 
-    public SVGLoader(SVGResourceProperties svgResourceProperties, PathRepository pathRepository) {
+    private final Resource masterSvgXMLDefinitions;
+
+    public SVGLoader(SVGResourceProperties svgResourceProperties,
+                     PathRepository pathRepository,
+                    @Value("${resources.masterSvgDefinitions}") Resource svgDefinitions) {
         this.svgResourceProperties = svgResourceProperties;
         this.modelMapper = new ModelMapper();
         this.pathRepository = pathRepository;
+        this.masterSvgXMLDefinitions = svgDefinitions;
     }
+
     public void load() {
-        logger.info("Loading XML from: " + svgResourceProperties.getDefaultSVGPath());
-        String loadPath = svgResourceProperties.getDefaultSVGPath();
-        String masterResources = svgResourceProperties.getMasterXMLresource();
-        loadFromXMLMasterFile(loadPath + masterResources);
 
-    }
+        logger.info("### Attempting to load master XML resource from CP: " + masterSvgXMLDefinitions.getFilename());
 
-    public void loadFromXMLMasterFile(String masterResource) {
-        File masterFile = new File(masterResource);
+        String targetFilePath = "";
 
-        if (masterFile.exists() ) {
-            logger.info("Processing master file: " + masterResource);
-            NodeList nodeList = getPathXMLNodes(masterResource);
+        if (masterSvgXMLDefinitions.exists() ) {
+            logger.info("### Processing master file: " + masterSvgXMLDefinitions.getFilename());
+
+            NodeList nodeList = null;
+            try {
+                nodeList = getPathXMLNodes(masterSvgXMLDefinitions.getInputStream());
+
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
             List<PathDTO> generatedPathDTOs = new ArrayList<>();
 
             AuditDetailsDTO defaultAuditDetails = generateAuditDetails();

@@ -1,8 +1,8 @@
 resources:
-  defaultSVGPath: src/main/resources/svg/
-  lowerCaseSVGPath: src/main/resources/svg/lower/
-  htmlTemplatePath: src/main/resources/html/
-  masterXMLresource: all_paths.xml
-  outputFile: generated.html
-  htmlHeaderTemplate: html_header.html
-  htmlFooterTemplate: html_footer.html
+#  defaultSVGPath: src/main/resources/svg/
+#  lowerCaseSVGPath: src/main/resources/svg/lower/
+#  htmlTemplatePath: classpath:html/
+  masterSvgDefinitions: classpath:svg/all_paths.xml
+#  outputFile: generated.html
+  htmlHeaderTemplate: classpath:html/html_header.html
+  htmlFooterTemplate: classpath:html/html_footer.html
